@@ -35,7 +35,7 @@ public class CrudService {
     public CrudResponseDto createCrud(CrudRequestDto requestDto, HttpServletRequest request) {
         Users users = checkJwtToken(request);
         //요청받은 dto로 db에 저장할 객체 Crud crud 만들기
-        Crud crud = new Crud(requestDto, users);
+        Crud crud = new Crud(requestDto);
         crud.addUser(users);
         crudRepository.save(crud);
         //브라우저에서 받아온 데이터를 저장하기 위해서 crud객체로 변환
@@ -47,7 +47,7 @@ public class CrudService {
     public List<CrudResponseDto> getCrudList() {
         //테이블에 저장되어있는 모든 글을 조회
         //내림차순
-        return crudRepository.findAllByOrderByCreatedAtDesc().stream().map(CrudResponseDto::new).collect(Collectors.toList());
+        return crudRepository.findAllByOrderByModifiedAtDesc().stream().map(CrudResponseDto::new).collect(Collectors.toList());
 
 
     }
@@ -66,138 +66,46 @@ public class CrudService {
     @Transactional
     public CrudResponseDto updateCrud(Long id, CrudRequestDto requestDto, HttpServletRequest request) {
         Users users = checkJwtToken(request);
-        Crud crud = crudRepository.findById(id).orElseThrow(
-                ()-> new IllegalArgumentException("게시글이 없습니다.")
-        );
-
-//        if(users.getRole()==UserRoleEnum.ADMIN){
-//            crud.update(requestDto);
-//        }else{
-//            throw new NoSuchElementException("권한 없음");
-//        }
-
-//            Crud crud = crudRepository.findByIdAndUsername(id, user.getUsername()).orElseThrow(
-//                () -> new IllegalArgumentException("권한이 없습니다.")
-//            );
-//            if (user.getRole() == UserRoleEnum.ADMIN) {
-//                crud.update(requestDto);
-//                return new CrudResponseDto(crud);
-//
-//            }else crud.update(requestDto);
+        //게시글 체크
+        Crud crud = checkCrud(id);
+        //권한 체크
+        isCrudUsers(users, crud);
+        crud.update(requestDto);
         return new CrudResponseDto(crud);
     }
-/*
-*
-* if(boardRepository.findBoardByIdAndUsername(id, user.getUsername()).isPresent()){
-board.update(requestDto);
-}else if(user.getRole() == UserRoleEnum.ADMIN){
-board.update(requestDto);
-}else{
-throw new NoSuchElementException("해당 게시글을 수정할 권한이 없습니다.");
-}*/
-
 
     //삭제
     @Transactional
 //    public ResponseEntity<MsgResponseDto> deleteCrud(Long id, HttpServletRequest request) {
     public MsgResponseDto deleteCrud(Long id, HttpServletRequest request) {
-        /*
-            String token = jwtUtil.resolveToken(request);
-            Claims claims;
-
-            if (token != null) {
-                if (jwtUtil.validateToken(token)) {
-                    claims = jwtUtil.getUserInfoFromToken(token);
-                } else {
-                    throw new IllegalArgumentException("Token Error");
-                }
-
-                User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                        () -> new IllegalArgumentException("사용자가 존재하지 않습니다")
-                );
-
-
-*/
-
-//            Crud crud = crudRepository.findById(id).orElseThrow(
-//
-//                    ()-> new IllegalArgumentException("글이 존재하지 않습니다.")
-//            );
-//            if(user.getRole() == UserRoleEnum.ADMIN){
-//                crudRepository.deleteById(id);
-//            }else{
         Users users = checkJwtToken(request);
-        log.info("-------두둥등장------"+ users.getUsername());
-        log.info("-------두둥등장------"+ users.getRole());
+        //게시글 체크
         Crud crud = checkCrud(id);
-        log.info("-----두둥등장------"+crud.getId());
-
-//        crudRepository.deleteById(id)
-//        if (users.getRole().equals(UserRoleEnum.USER)){
-//            log.info("======권한======"+ users.getRole());
-//            log.info("======권한======"+UserRoleEnum.USER);
-//            log.info("======권한======"+id);
-//        }
+        //권한 체크
+        isCrudUsers(users,crud);
         crudRepository.deleteById(id);
-//        else if (user.getRole().equals(UserRoleEnum.ADMIN)) {
-//            crudRepository.deleteById(id);
-//        } else {
-//            throw new NoSuchElementException("권한 없음");
-
-//                    Crud crud = crudRepository.findByIdAndUsername(id, user.getUsername()).orElseThrow(
-//                            () -> new IllegalArgumentException("권한이 없습니다.")
-//                    );
-//                    crudRepository.deleteById(id);
-//
-//                return new MsgResponseDto("게시글 삭제 성공", HttpStatus.OK.value());
-////         }
-//            } else {
-//                return new MsgResponseDto("게시글 작성자만 삭제 가능, 권한 없음", HttpStatus.OK.value());
-//        }
-//        return new ResponseEntity<"게시글삭제성공">;
-//        return new ResponseEntity<"게시글 삭제 성공",HttpStatus.OK.value()>;
         return new MsgResponseDto("게시글 삭제 성공",HttpStatus.OK.value());
     }
 
 
 
-    private Crud checkCrud(Long id) {
+    //글 존재 여부 확인
+    private Crud checkCrud(Long id){
         Crud crud = crudRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("글이 존재하지 않습니다.")
         );
         return crud;
     }
 
-    public CrudResponseDto getCrudByTitle(String title) {
-        Crud crud = crudRepository.findByTitle(title).orElseThrow(
-                () -> new NullPointerException("해당하는 제목의 글이 없습니다.")
-        );
-        return new CrudResponseDto(crud);
+    //권한 여부
+    private void isCrudUsers(Users users, Crud crud){
+        //게시글에 있는 작성자 / JWT토큰의 작성자와 똑같은지 비교 // JWT토큰이 admin이 아니라면
+        if(!crud.getUsers().getUsername().equals(users.getUsername()) && !users.getRole().equals(UserRoleEnum.ADMIN)){
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
     }
 
-
-//    public User checkJwtToken(HttpServletRequest request) {
-//        // Request에서 Token 가져오기
-//        String token = jwtUtil.resolveToken(request);
-//        Claims claims;
-//        // 토큰이 있는 경우에만 게시글 접근 가능
-//        if (token != null) {
-//            if (jwtUtil.validateToken(token)) {
-//                // 토큰에서 사용자 정보 가져오기
-//                claims = jwtUtil.getUserInfoFromToken(token);
-//            } else {
-//                throw new IllegalArgumentException("Token Error");
-//            }
-//            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
-//            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-//                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-//            );
-//
-//            return user;
-//        }
-//        return null;
-//    }
-    
+    //권한 확인
     private Users checkJwtToken(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
@@ -210,7 +118,7 @@ throw new NoSuchElementException("해당 게시글을 수정할 권한이 없습
         }
 
         return userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                () -> new IllegalArgumentException("사용자가 없습니다.")
+                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
     }
 

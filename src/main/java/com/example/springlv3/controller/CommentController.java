@@ -12,26 +12,27 @@ import javax.servlet.http.HttpServletRequest;
 
 //Json형태의 객체반환
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
-//
-//    //게시
-//    @PostMapping("/comments")
-//    public CommentResponseDto createBoard(@RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
-//        return commentService.create(requestDto, request);
-//    }
-//
-//    //수정
-//    @PutMapping("/comments/{id}")
-//    public CommentResponseDto updateBoard(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
-//        return commentService.update(id, requestDto, request);
-//    }
-//
-//    //삭제
-//    @DeleteMapping("/comments/{id}")
-//    public CommentResponseDto deleteBoard(@PathVariable Long id, HttpServletRequest request) {
-//        return commentService.deleteCrud(id, request);
-//    }
+
+    //댓글 작성
+    @PostMapping("/comment")
+    public CommentResponseDto createBoard(@RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
+        return commentService.createComment(requestDto, request);
+    }
+
+    //댓글 수정
+    @PutMapping("/comment/{id}")
+    public CommentResponseDto updateBoard(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
+        return commentService.updateComment(id, requestDto, request);
+   }
+
+    //댓글 삭제
+    @DeleteMapping("/comment/{id}")
+   public MsgResponseDto deleteBoard(@PathVariable Long id, HttpServletRequest request) {
+       return commentService.deleteComment(id, request);
+    }
 }

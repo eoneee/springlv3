@@ -47,17 +47,11 @@ public class CrudController {
         return crudService.updateCrud(id,requestDto,request);
     }
 
-
     //삭제
     @DeleteMapping("/post/{id}")
     public MsgResponseDto deleteCrud(@PathVariable Long id, HttpServletRequest request) {
         return crudService.deleteCrud(id,request);
 
-    }
-
-    @GetMapping("/title/{title}")
-    public CrudResponseDto getCrudByTitle(@PathVariable String title){
-        return crudService.getCrudByTitle(title);
     }
 
 

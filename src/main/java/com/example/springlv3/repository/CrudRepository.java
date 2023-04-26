@@ -10,8 +10,7 @@ import java.util.Optional;
 @Repository
 //spring data JPA
 public interface CrudRepository extends JpaRepository<Crud, Long> {
-    Optional<Crud> findByTitle(String title);
     //내림차순 정렬
-//    Collection<Crud> findAllByOrderByModifiedAtDesc();
+    Collection<Crud> findAllByOrderByModifiedAtDesc();
     Collection<Crud> findAllByOrderByCreatedAtDesc();
 }

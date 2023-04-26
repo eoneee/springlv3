@@ -52,7 +52,7 @@ public class UserService {
         //비밀번호 정규식 확인
         Optional<Users> pw = userRepository.findByUsername(password);
 //        if (!Pattern.matches("^\\w{8,15}[$@$!%*#?&]$", password)) {
-        if (!Pattern.matches("^[a-z0-9]{8,15}$", password)) {
+        if (!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,15}", password)) {
 //            if (!Pattern.matches("^[a-z0-9]{8,15}[$@$!%*#?&]$", password)) {
 //            return ResponseEntity.ok(new MsgResponseDto("비밀번호는 8자 이상, 15자 이하 알파벳 대/소문자, 숫자로만 이루어져야 합니다.",505));
 

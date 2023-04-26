@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Entity
@@ -19,15 +20,18 @@ public class Crud extends Timestamped{
     private String title;
     @Column(nullable = false)
     private String content;
+    //외래키
+    @OneToMany(mappedBy = "crud")
+   // @JoinColumn(name = "userId", nullable = false)
+    private List<Comment> comment;
+
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users users;
 
-
-    public Crud(CrudRequestDto requestDto, Users users)  {
+    public Crud(CrudRequestDto requestDto)  {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.users = users;
     }
     public void update(CrudRequestDto requestDto) {
         this.title = requestDto.getTitle();
