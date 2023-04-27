@@ -35,9 +35,7 @@ public class Comment extends Timestamped {  //  implements CrudAndComment 필요
         this.content = commentRequestDto.getContent();
     }
 
-//    public Comment(CommentRequestDto requestDto)  {
-//        this.content = requestDto.getContent();
-//    }
+
 
 
 
