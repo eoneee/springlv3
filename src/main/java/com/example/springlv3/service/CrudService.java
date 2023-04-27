@@ -46,11 +46,57 @@ public class CrudService {
 /*
     //메인 페이지
     @Transactional(readOnly = true) //JPA를 사용할 경우, 변경감지 작업을 수행하지 않아서 성능이점 있음
-    public List<CrudResponseDto> getCrudList() {
-        //테이블에 저장되어있는 모든 글을 조회
-        //내림차순
-        return crudRepository.findAllByOrderByModifiedAtDesc().stream().map(CrudResponseDto::new).collect(Collectors.toList());
+    public ResponseEntity getCrudList() {
 
+        List<CrudResponseDto> crudList = crudRepository.findAllByOrderByModifiedAtDesc().stream().map(CrudResponseDto::new).collect(Collectors.toList());
+                StatusDto statusDto = StatusDto.setSuccess(HttpStatus.OK.value(), "목록 조회 성공", crudList);
+                return new ResponseEntity(statusDto, HttpStatus.OK);
+        }
+*/
+    public List<CrudResponseDto> getCrudList() {  // 데이터 베이스에 저장 된 전체 게시물 전부다 가져오는 API
+        // 테이블에 저장 되어 있는 모든 게시물 목록 조회
+        List<Crud> crudList = crudRepository.findAllByOrderByCreatedAtDesc();
+//        List<Comment> commentList = commentRepository.findAllByOrderByCreatedAtDesc();
+
+        // DB 에서 가져온 것
+        return crudList.stream().map(CrudResponseDto::new).collect(Collectors.toList());
+//        List<CrudAndComment> lists = new ArrayList();
+
+//        for(Crud crud : crudList){
+//            lists.add(new CrudResponseDto(crud));
+            //for 달아서 new CrudResponseDto(crud).getCommentList()에서 하나씩 꺼내서 lists에 추가
+//            for(Comment comment : new CrudResponseDto(crud).getCommentList()) {
+//                lists.add(comment); //여기 잠깐 주석
+//
+//            }
+
+
+//            lists.add(new CrudResponseDto(crud).getCommentList()); //여기 잠깐 주석
+//            for(Comment comment : commentList){
+//                if(comment.getCrud().getId() == crud.getId()){
+//                    lists.add(new CrudResponseDto(comment));
+//                }
+//        }
+
+//        return lists;
+    }
+    //
+//            for (Crud crud : cruds) {
+//                List<Comment> comments = commentRepository.findAllByCrud(crud);
+//                if(comments.isEmpty()){
+//                    crudListResponseDto.add(new CommentResponseDto(crud));
+//                }else{
+//                    crudListResponseDto.add(new CommentResponseDto(crud, (ArrayList<Comment>) comments));
+//                }
+////                crud.addComment(comments);
+////                CrudResponseDtoList.add(new CrudResponseDto(crud));
+//            }
+//
+//        //테이블에 저장되어있는 모든 글을 조회
+//        //내림차순
+//        return crudRepository.findAllByOrderByModifiedAtDesc().stream()
+//                .map(CrudResponseDto::new)
+//                .collect(Collectors.toList());
 
 
 

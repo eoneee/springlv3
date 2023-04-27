@@ -18,4 +18,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
         List<Comment> findByCrud_IdOrderByModifiedAtDesc(Long id);
 
+        List<Comment> findAllByOrderByCreatedAtDesc();
 }
