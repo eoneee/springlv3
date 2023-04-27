@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Comment extends Timestamped{
+public class Comment extends Timestamped {  //  implements CrudAndComment 필요없는 애라 지우시면 되요
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "commentId")
