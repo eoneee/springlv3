@@ -26,8 +26,9 @@ public class Comment extends Timestamped {  //  implements CrudAndComment 필요
     @JoinColumn(name = "userId", nullable = false)
     private Users users;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crudId", nullable = false)
+    @JsonBackReference //순환참조 막아줌
     private Crud crud;
 
     public Comment(CommentRequestDto commentRequestDto){

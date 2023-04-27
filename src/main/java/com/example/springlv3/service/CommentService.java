@@ -64,7 +64,7 @@ public class CommentService {
         //권한 체크
         isCommentUsers(users, comment);
         comment.update(requestDto);
-        StatusDto statusDto = StatusDto.setSuccess(HttpStatus.OK.value(), "수정 성공", requestDto);
+        StatusDto statusDto = StatusDto.setSuccess(HttpStatus.OK.value(), "수정 성공", new CommentResponseDto(comment));
         return new ResponseEntity(statusDto,HttpStatus.OK);
     }
 

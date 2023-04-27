@@ -22,6 +22,7 @@ public class Crud extends Timestamped{
     //private이기 때문에 controller에서 못쓰니까 method -> Getter
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private String content;
     //외래키
@@ -48,7 +49,6 @@ public class Crud extends Timestamped{
     public void addUser(Users users){
         this.users = users;
     }
-
 
 }
 
