@@ -2,8 +2,10 @@ package com.example.springlv3.entity;
 import com.example.springlv3.dto.CrudRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,8 +25,8 @@ public class Crud extends Timestamped{
     //외래키
 //    @OneToMany(mappedBy = "crud")
    // @JoinColumn(name = "userId", nullable = false)
-    private List<Comment> comment;
-
+//    private List<Comment> comment = new ArrayList<>();
+    //private List<Comment> comment;
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users users;

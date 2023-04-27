@@ -125,21 +125,24 @@ public class CommentService {
 /*package com.example.springlv3.service;
 
 import com.example.springlv3.dto.*;
-import com.example.springlv3.entity.Comment;
-import com.example.springlv3.entity.Crud;
-import com.example.springlv3.entity.UserRoleEnum;
-import com.example.springlv3.entity.Users;
+import com.example.springlv3.entity.*;
 import com.example.springlv3.jwt.JwtUtil;
 import com.example.springlv3.repository.CommentRepository;
 import com.example.springlv3.repository.CrudRepository;
 import com.example.springlv3.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.engine.spi.ManagedEntity;
+import org.hibernate.engine.spi.Status;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -149,6 +152,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CrudRepository crudRepository;
     private final JwtUtil jwtUtil;
+    private com.example.springlv3.entity.StatusEnum StatusEnum;
 
 
     //덧글 생성
@@ -170,7 +174,7 @@ public class CommentService {
 
     //수정하기
     @Transactional
-    public CommentResponseDto updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
+    public ResponseEntity<CommentResponseDto> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
         Users users = checkJwtToken(request);
         //게시글 체크
         Comment comment = checkComment(id);
@@ -181,7 +185,7 @@ public class CommentService {
         }
         isCommentUsers(users, comment);
         comment.update(requestDto);
-        return new CommentResponseDto(comment);
+        return ResponseEntity.ok(new CommentResponseDto(comment));
     }
 
 //    @Transactional
@@ -202,7 +206,12 @@ public class CommentService {
         //게시글 체크
         Comment comment = checkComment(id);
         //권한 체크
-        isCommentUsers(users, comment);
+        if(!comment.getUsers().getUsername().equals(users.getUsername())){
+            String message = "작성자만 삭제할 수 있습니다";
+            StatusDto statusDto = StatusDto.setFail(HttpStatus.BAD_REQUEST.value(), message);
+            throw new RuntimeException(statusDto.toString());
+        }
+        //isCommentUsers(users, comment);
         commentRepository.deleteById(id);;
         return new MsgResponseDto("댓글 삭제 성공", HttpStatus.OK.value());
     }
@@ -216,7 +225,7 @@ public class CommentService {
     }
 
     //권한 여부
-    private void isCommentUsers(Users users, Comment comment){
+    public void isCommentUsers(Users users, Comment comment){
         //게시글에 있는 작성자 / JWT토큰의 작성자와 똑같은지 비교 // JWT토큰이 admin이 아니라면
         if(!comment.getUsers().getUsername().equals(users.getUsername()) && !users.getRole().equals(UserRoleEnum.ADMIN))
             throw new IllegalArgumentException("권한이 없습니다.");
@@ -240,6 +249,8 @@ public class CommentService {
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
     }
+
+
 
     private Crud checkCrud(Long id){
         Crud crud = crudRepository.findById(id).orElseThrow(

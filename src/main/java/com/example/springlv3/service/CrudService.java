@@ -141,6 +141,7 @@ package com.example.springlv3.service;
 import com.example.springlv3.dto.CrudRequestDto;
 import com.example.springlv3.dto.CrudResponseDto;
 import com.example.springlv3.dto.MsgResponseDto;
+import com.example.springlv3.dto.StatusDto;
 import com.example.springlv3.entity.Crud;
 import com.example.springlv3.entity.Users;
 import com.example.springlv3.entity.UserRoleEnum;
@@ -207,7 +208,12 @@ public class CrudService {
         //게시글 체크
         Crud crud = checkCrud(id);
         //권한 체크
-        isCrudUsers(users, crud);
+        if(!crud.getUsers().getUsername().equals(users.getUsername())){
+            String message = "수정 권한이 없습니다.";
+            StatusDto statusDto = StatusDto.setFail(HttpStatus.BAD_REQUEST.value(), message);
+            throw new IllegalArgumentException(statusDto.toString());
+        }
+        //isCrudUsers(users, crud);
         crud.update(requestDto);
         return new CrudResponseDto(crud);
     }
@@ -220,7 +226,12 @@ public class CrudService {
         //게시글 체크
         Crud crud = checkCrud(id);
         //권한 체크
-        isCrudUsers(users,crud);
+        if(!crud.getUsers().getUsername().equals(users.getUsername())){
+            String message = "삭제 권한이 없습니다.";
+            StatusDto statusDto = StatusDto.setFail(HttpStatus.BAD_REQUEST.value(), message);
+            throw new IllegalArgumentException(statusDto.toString());
+        }
+        //isCrudUsers(users,crud);
         crudRepository.deleteById(id);
         return new MsgResponseDto("게시글 삭제 성공",HttpStatus.OK.value());
     }
@@ -252,7 +263,7 @@ public class CrudService {
             // 토큰에서 사용자 정보 가져오기
             claims = jwtUtil.getUserInfoFromToken(token);
         } else {
-            throw new IllegalArgumentException("로그인 후 이용해 주세요");
+            throw new IllegalArgumentException("토큰이 일치하지 않습니다.");
         }
 
         return userRepository.findByUsername(claims.getSubject()).orElseThrow(

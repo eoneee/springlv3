@@ -6,6 +6,7 @@ import com.example.springlv3.entity.UserRoleEnum;
 import com.example.springlv3.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -43,13 +44,13 @@ public class CrudController {
 
     //수정하기
     @PutMapping("/post/{id}")
-    public CrudResponseDto updateCrud(@PathVariable Long id, @RequestBody CrudRequestDto requestDto, HttpServletRequest request) {
+    public ResponseEntity updateCrud(@PathVariable Long id, @RequestBody CrudRequestDto requestDto, HttpServletRequest request) {
         return crudService.updateCrud(id,requestDto,request);
     }
 
     //삭제
     @DeleteMapping("/post/{id}")
-    public MsgResponseDto deleteCrud(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity deleteCrud(@PathVariable Long id, HttpServletRequest request) {
         return crudService.deleteCrud(id,request);
 
     }
