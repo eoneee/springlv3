@@ -40,17 +40,10 @@ public class CommentService {
         Crud crud = checkCrud(requestDto.getCrudId());
         // 요청받은 DTO로 DB에 저장할 객체 만들기
         Comment comment = new Comment(requestDto);
-//        List<Comment> commentList = crud.getCommentList();
-        //user값을 comment에 추가시켜줌
-//        commentList.add(comment);
-        //Crud값을 commnet에 추가
-//        crud.addComment(commentList);
-
         comment.addUser(users);
         comment.addCrud(crud);
 
         commentRepository.save(comment);
-//        crudRepository.save(crud);
 
         return new CommentResponseDto(comment);
     }

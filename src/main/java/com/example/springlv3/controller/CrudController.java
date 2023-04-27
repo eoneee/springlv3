@@ -35,9 +35,6 @@ public class CrudController {
     @GetMapping("/posts")
     public List<CrudResponseDto> list(){
         return crudService.getCrudList();
-//       return crudService.write(crud);
-//    public List<CrudResponseDto> getCrudList() {
-//        return crudService.getCrudList();
     }
 
     //전체목록 말고 하나씩 보기
@@ -45,10 +42,8 @@ public class CrudController {
     public CrudResponseDto getCrud(@PathVariable Long id) {
         return crudService.getCrud(id);
     }
-//    @GetMapping("/post/{id}")
-//    public ResponseEntity listOne(@PathVariable Long id){
-//        return crudService.getCrud(id);
-//    }
+
+
     //수정하기
     @PutMapping("/post/{id}")
     public ResponseEntity updateCrud(@PathVariable Long id, @RequestBody CrudRequestDto requestDto, HttpServletRequest request) {
