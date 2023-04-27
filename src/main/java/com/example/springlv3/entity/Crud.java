@@ -1,5 +1,6 @@
 package com.example.springlv3.entity;
 import com.example.springlv3.dto.CrudRequestDto;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.catalina.User;
@@ -7,6 +8,7 @@ import org.apache.catalina.User;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @Entity
@@ -24,15 +26,15 @@ public class Crud extends Timestamped{
     private String content;
     //외래키
 //    @OneToMany(mappedBy = "crud")
-   // @JoinColumn(name = "userId", nullable = false)
-//    private List<Comment> comment = new ArrayList<>();
-    //private List<Comment> comment;
+//    private List<Comment> comment;
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users users;
 
-    @OneToMany(mappedBy = "crud", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comment;
+    @OneToMany(mappedBy = "crud", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("createdAt desc")
+    @JsonManagedReference
+    private List<Comment> commentList;
 
     public Crud(CrudRequestDto requestDto)  {
         this.title = requestDto.getTitle();

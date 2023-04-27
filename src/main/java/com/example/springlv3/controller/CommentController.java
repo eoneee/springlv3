@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 //Json형태의 객체반환
 @RestController
@@ -20,19 +21,19 @@ public class CommentController {
 
     //댓글 작성
     @PostMapping("/comment")
-    public CommentResponseDto createBoard(@RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
+    public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
         return commentService.createComment(requestDto, request);
     }
 
     //댓글 수정
     @PutMapping("/comment/{id}")
-    public ResponseEntity updateBoard(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
+    public ResponseEntity updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
         return commentService.updateComment(id, requestDto, request);
     }
 
     //댓글 삭제
     @DeleteMapping("/comment/{id}")
-    public ResponseEntity deleteBoard(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity deleteComment(@PathVariable Long id, HttpServletRequest request) {
         return commentService.deleteComment(id, request);
     }
 }

@@ -10,13 +10,13 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class CrudResponseDto {
+public class CrudResponseDto implements CrudAndComment{
     private Long id;
     private String title;
     private String username;
     private UserRoleEnum role;
     private String content;
-    private List<Comment> comment;
+    private List<Comment> commentList;
 
 
     public CrudResponseDto(Crud crud) {
@@ -25,6 +25,6 @@ public class CrudResponseDto {
         this.username = crud.getUsers().getUsername();
         this.role = crud.getUsers().getRole();
         this.content = crud.getContent();
-        this.comment = crud.getComment();
+        this.commentList = crud.getCommentList();
     }
 }

@@ -1,15 +1,10 @@
 package com.example.springlv3.service;
 
-import com.example.springlv3.dto.CrudRequestDto;
-import com.example.springlv3.dto.CrudResponseDto;
-import com.example.springlv3.dto.MsgResponseDto;
-import com.example.springlv3.dto.StatusDto;
-import com.example.springlv3.entity.Crud;
-import com.example.springlv3.entity.StatusEnum;
-import com.example.springlv3.entity.Users;
-import com.example.springlv3.entity.UserRoleEnum;
+import com.example.springlv3.dto.*;
+import com.example.springlv3.entity.*;
 import com.example.springlv3.exception.CustomException;
 import com.example.springlv3.jwt.JwtUtil;
+import com.example.springlv3.repository.CommentRepository;
 import com.example.springlv3.repository.CrudRepository;
 import com.example.springlv3.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -21,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -31,8 +27,10 @@ import java.util.stream.Collectors;
 public class CrudService {
 
     private final CrudRepository crudRepository;
+    private final CrudRequestDto crudRequestDto;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final CommentRepository commentRepository;
 
     //글 생성하기
     @Transactional
@@ -45,7 +43,7 @@ public class CrudService {
         //브라우저에서 받아온 데이터를 저장하기 위해서 crud객체로 변환
         return new CrudResponseDto(crud);
     }
-
+/*
     //메인 페이지
     @Transactional(readOnly = true) //JPA를 사용할 경우, 변경감지 작업을 수행하지 않아서 성능이점 있음
     public List<CrudResponseDto> getCrudList() {
@@ -54,7 +52,7 @@ public class CrudService {
         return crudRepository.findAllByOrderByModifiedAtDesc().stream().map(CrudResponseDto::new).collect(Collectors.toList());
 
 
-    }
+
 
 
     //전체목록 말고 하나씩 보기
