@@ -21,13 +21,16 @@ public class Crud extends Timestamped{
     @Column(nullable = false)
     private String content;
     //외래키
-    @OneToMany(mappedBy = "crud")
+//    @OneToMany(mappedBy = "crud")
    // @JoinColumn(name = "userId", nullable = false)
     private List<Comment> comment;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users users;
+
+    @OneToMany(mappedBy = "crud", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment;
 
     public Crud(CrudRequestDto requestDto)  {
         this.title = requestDto.getTitle();

@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -34,6 +36,11 @@ public class Users {
         this.password = password;
         this.role = role;
     }
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment = new ArrayList<>();
+
+
 //    public User(String username, String password) {
 //        this.username = username;
 //        this.password = password;
