@@ -17,11 +17,15 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 @RestController
+//Spring MVC Controller에 @ResponseBody가 추가 됨
+//@RestController는 클래스의 각 메서드마다 @ResponseBody를 추가할 필요가 없어짐(@Controller와의 차이점)
 @RequiredArgsConstructor
-//클라이언츠의 요청을 하나씩 연결해줌
+//@RequiredArgsConstructor : 생성자 주입(final 이나 Notnull이 붙은 필드의 생성자를 자동생성 해줌)
+//새로운 필드를 추가할 때 다시 생성자를 만들어서 관리해야 하는 번거로움을 없애줌(@Autowired사용x)
 @RequestMapping("/api")
+//@RequestMapping : controller에서 사용됨
+//요청이 왔을 때 어떤 컨트롤러가 호출되어야 하는지 알려줌
 public class CrudController {
-
     private final CrudService crudService;
 
     //글 생성하기
@@ -34,6 +38,7 @@ public class CrudController {
     //메인 페이지
     @GetMapping("/posts")
     public List<CrudResponseDto> list(){
+        //List로 선언(글들을 list해서 가져옴)
         return crudService.getCrudList();
     }
 
@@ -41,6 +46,8 @@ public class CrudController {
     @GetMapping("/post/{id}")
     public CrudResponseDto getCrud(@PathVariable Long id) {
         return crudService.getCrud(id);
+        // service에서 id를 받아서 확인후 response를 가져옴
+
     }
 
 

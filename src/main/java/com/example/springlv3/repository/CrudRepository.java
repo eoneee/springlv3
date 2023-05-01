@@ -14,4 +14,5 @@ public interface CrudRepository extends JpaRepository<Crud, Long> {
     //내림차순 정렬
     Collection<Crud> findAllByOrderByModifiedAtDesc();
     List<Crud> findAllByOrderByCreatedAtDesc();
+    //Crud List로 모든 값을 내림차순정렬하여 가지고 옴
 }

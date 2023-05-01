@@ -36,14 +36,15 @@ public class CrudService {
     @Transactional
     public CrudResponseDto createCrud(CrudRequestDto requestDto, HttpServletRequest request) {
         Users users = checkJwtToken(request);
-        //요청받은 dto로 db에 저장할 객체 Crud crud 만들기
         Crud crud = new Crud(requestDto);
+        //요청받은 dto로 db에 저장할 객체 Crud crud 만들기
         crud.addUser(users);
         crudRepository.save(crud);
         //브라우저에서 받아온 데이터를 저장하기 위해서 crud객체로 변환
         return new CrudResponseDto(crud);
     }
-    public List<CrudResponseDto> getCrudList() {  // 데이터 베이스에 저장 된 전체 게시물 전부다 가져오는 API
+    public List<CrudResponseDto> getCrudList() {
+        // 데이터 베이스에 저장 된 전체 게시물 전부다 가져오는 API
         // 테이블에 저장 되어 있는 모든 게시물 목록 조회
         List<Crud> crudList = crudRepository.findAllByOrderByCreatedAtDesc();
 
@@ -109,6 +110,7 @@ public class CrudService {
     //권한 확인
     private Users checkJwtToken(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
+        //header 토큰을 가져오기
         Claims claims;
         // 토큰 검증
         if(token == null){

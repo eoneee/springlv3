@@ -26,7 +26,6 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CrudRepository crudRepository;
     private final JwtUtil jwtUtil;
-//    private SimpleJpaRepository crudFindService;
 
 
     //덧글 생성

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
+    //@ExceptionHandler : Bean내에서 발생하는 예외를 잡아서 하나의 메서드에서 처리해주는 기능
     protected ResponseEntity<ErrorResponseDto> handleCustomException(final CustomException e){
         log.error("handleCustomException : {}", e.getStatusEnum());
         return ResponseEntity

@@ -15,8 +15,10 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 //    List<Comment> findByCrud(Crud crud);
 //    Optional<Comment> findByUserAndCrud(Users users, Crud crud);
-
-        List<Comment> findByCrud_IdOrderByModifiedAtDesc(Long id);
-
-        List<Comment> findAllByOrderByCreatedAtDesc();
+//
+//        List<Comment> findByCrud_IdOrderByModifiedAtDesc(Long id);
+//        //Comment List를 Crud로 가져오기
+//
+//        List<Comment> findAllByOrderByCreatedAtDesc();
+//        //Comment List를 모두 가져오기
 }

@@ -17,29 +17,42 @@ public class Crud extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crudId")
-    //pirvate -> controller에 못씀 : method -> Getter
     private Long id;
-    //private이기 때문에 controller에서 못쓰니까 method -> Getter
+
+
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String content;
-    //외래키
-//    @OneToMany(mappedBy = "crud")
-//    private List<Comment> comment;
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private Users users;
 
+
+    ////// Comment 테이블과 연관관계 //////
     @OneToMany(mappedBy = "crud", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@OneToMany(1대N) Comment에서도 N:1 이므로 양방향, mappedBy : crud로 주인 설정
+    //CascadeType.All : 모든 종속 관계 영속성 전이. PERSIST & REMOVE 수행
     @OrderBy("createdAt desc")
+    //@OrderBy : 정렬 , desc : 내림차순
     @JsonManagedReference
+    //순환참조 막아줌
+    //부모 class - @JsonManagedReference
     private List<Comment> commentList;
+    /////////////////////////////////
+
+
+    //// Users 테이블과 연관 관계 ////
+    @ManyToOne
+    //@ManyToOne : 다대일 단방향, 주인은 N = Crud
+    @JoinColumn(name = "userId", nullable = false)
+    //userId를 가지고 참조할 것이며, JoinColumn 할 것
+    private Users users;
+    /////////////////////////////
+
 
     public Crud(CrudRequestDto requestDto)  {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
+        //request 요청된 데이터들로 생성
     }
     public void update(CrudRequestDto requestDto) {
         this.title = requestDto.getTitle();
@@ -48,6 +61,7 @@ public class Crud extends Timestamped{
 
     public void addUser(Users users){
         this.users = users;
+        //addUser로 받은 users를 생성
     }
 
 }
